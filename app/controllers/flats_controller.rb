@@ -1,9 +1,14 @@
 class FlatsController < ApplicationController
-  before_action :set_flat, only: %i[ show edit update destroy ]
+  before_action :set_flat, only: %i[show edit update destroy]
 
   # GET /flats or /flats.json
   def index
-    @flats = Flat.all
+    if params[:query].present?
+      @query = params[:query]
+      @flats = Flat.where("name ILIKE ?", "%#{params[:query]}%")
+    else
+      @flats = Flat.all
+    end
   end
 
   # GET /flats/1 or /flats/1.json
@@ -65,6 +70,6 @@ class FlatsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def flat_params
-      params.require(:flat).permit(:name, :address, :description, :price_per_night, :number_of_guests)
+      params.require(:flat).permit(:name, :address, :description, :price_per_night, :number_of_guests, :picture_url)
     end
 end
